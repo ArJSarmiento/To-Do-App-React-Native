@@ -1,11 +1,10 @@
 import React from 'react';
-import { StyleSheet, Text, TextInput, View, Button } from 'react-native';
+import { StyleSheet, TextInput, View, Button } from 'react-native';
 
 export default function AddTodo({ addTodo }) {
     const [disabled, setDisabled] = React.useState(true);
     const [text, setText] = React.useState('');
     const changeHandler = (val) => {
-        //disable submit button if text is empty
         if (val.length === 0) {
             setDisabled(true);
         }

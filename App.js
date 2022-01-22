@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, View, FlatList, Button } from 'react-native';
+import { StyleSheet, View, FlatList, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import Header from './components/header';
 import TodoItem from './components/todoitem';
 import AddTodo from './components/addTodo';
@@ -11,32 +11,38 @@ export default function App() {
   ]);
 
   const pressHandler = (key) => {
-    addTodo(prevTodos => {
-      return prevTodos.filter(todo => todo.key != key)
-    })
+    setTimeout(() => {
+      addTodo(prevTodos => {
+        return prevTodos.filter(todo => todo.key != key)
+      })
+    }, 500)
   }
 
   const submitHandler = (text) => {
+    Keyboard.dismiss();
     addTodo(prevTodos => {
       return [{ text: text, key: Math.random().toString() }, ...prevTodos]
     })
   }
 
   return (
-    <View style={styles.container}>
-      <Header />
-      <View style={styles.content}>
-        <AddTodo addTodo={submitHandler} />
-        <FlatList
-          data={todo}
-          renderItem={
-            ({ item }) =>
-              <TodoItem item={item} pressHandler={pressHandler} />
-          }
-        />
+    <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
+      <View style={styles.container}>
+        <Header />
+        <View style={styles.content}>
+          <AddTodo addTodo={submitHandler} />
+          <FlatList
+            style={styles.list}
+            data={todo}
+            renderItem={
+              ({ item }) =>
+                <TodoItem item={item} pressHandler={pressHandler} />
+            }
+          />
+        </View>
+        <StatusBar style="auto" />
       </View>
-      <StatusBar style="auto" />
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -44,7 +50,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: 40,
     alignItems: 'center',
   },
   item: {
@@ -55,6 +60,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'pink',
   },
   content: {
+    flex: 1,
+    paddingBottom: 50,
     width: '90%',
+  },
+  list: {
+    flex: 1,
+    marginTop: 20
   }
 });
